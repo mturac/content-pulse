@@ -1,0 +1,18 @@
+{
+  "name": "contentful-app-content-pulse",
+  "version": "1.0.0",
+  "description": "ContentPulse - Semantic Decay & Freshness Engine for Contentful",
+  "main": "src/index.tsx",
+  "scripts": {
+    "build": "contentful-extension build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@contentful/f36-components": "^4.0.0",
+    "@contentful/react-apps-toolkit": "^1.0.0",
+    "chrono-node": "^2.7.7",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "license": "MIT"
+}

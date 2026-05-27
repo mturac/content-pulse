@@ -1,0 +1,33 @@
+{
+  "id": "contentpulse-contentful",
+  "name": "ContentPulse",
+  "description": "Content freshness analyzer that detects stale dates, outdated version strings, and deprecated references in your entries",
+  "src": "src/index.tsx",
+  "locations": [
+    {
+      "location": "entry-sidebar",
+      "name": "ContentPulse",
+      "description": "Analyzes content freshness and warns about potentially outdated information"
+    }
+  ],
+  "parameters": {
+    "instance": [
+      {
+        "id": "decayThresholdDays",
+        "name": "Date Decay Threshold (days)",
+        "description": "Number of days after which a date reference is considered stale",
+        "type": "Number",
+        "default": 365,
+        "required": false
+      },
+      {
+        "id": "enableRichTextAnalysis",
+        "name": "Enable Rich Text Analysis",
+        "description": "Analyze Contentful rich text fields for date and version references",
+        "type": "Boolean",
+        "default": true,
+        "required": false
+      }
+    ]
+  }
+}
