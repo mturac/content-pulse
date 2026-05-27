@@ -2,14 +2,18 @@
 
 # ContentPulse
 
-**Semantic Decay & Freshness Engine for PayloadCMS v3**
+**Semantic Decay & Freshness Engine for Headless CMS**
 
 ![PayloadCMS](docs/images/badge-payload.svg)
+![Strapi](https://img.shields.io/badge/Strapi-v5-4945FF.svg)
+![Contentful](https://img.shields.io/badge/Contentful-App-2478CC.svg)
 ![TypeScript](docs/images/badge-typescript.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Tests: 14/14](https://img.shields.io/badge/Tests-14%2F14-brightgreen.svg)
 
 *Detect outdated content before your users do.*
+
+**Supported Platforms:** [PayloadCMS v3](#payloadcms) · [Strapi v5](#strapi) · [Contentful](#contentful)
 
 [English](#english) | [Français](#français) | [Türkçe](#türkçe)
 
