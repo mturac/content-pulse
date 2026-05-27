@@ -148,6 +148,68 @@ ContentPulse is designed with privacy in mind:
 - ✅ **No Data Collection** — Content never leaves your server
 - ✅ **No Tracking** — No analytics or telemetry
 
+---
+
+<a name="strapi"></a>
+## 🟣 Strapi v5
+
+The Strapi plugin version provides lifecycle hooks for automatic content analysis.
+
+### Installation
+
+```bash
+cd strapi-plugin
+npm install
+```
+
+### Usage
+
+```typescript
+// config/plugins.ts
+export default {
+  'content-pulse': {
+    enabled: true,
+    config: {
+      maxAgeDays: 365,
+    },
+  },
+}
+```
+
+### Features
+
+- Automatic `afterCreate` and `afterUpdate` lifecycle hooks
+- Admin panel widget with Strapi Design System
+- Hidden fields for score, warnings, and analysis timestamp
+
+---
+
+<a name="contentful"></a>
+## 🔵 Contentful App
+
+The Contentful App version provides a sidebar widget for content entries.
+
+### Installation
+
+```bash
+cd contentful-app
+npm install
+```
+
+### Usage
+
+1. Create a Contentful App in your space
+2. Upload the built app
+3. Add the sidebar widget to your content types
+
+### Features
+
+- Sidebar widget using Contentful Forma 36 design system
+- Real-time freshness analysis on entry save
+- Progress bar with color-coded severity badges
+
+---
+
 ### License
 
 MIT
