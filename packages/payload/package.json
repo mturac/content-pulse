@@ -1,0 +1,22 @@
+{
+  "name": "@contentpulse/payload",
+  "version": "0.1.0",
+  "description": "ContentPulse adapter for Payload CMS v3 — semantic decay & freshness engine",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@contentpulse/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "payload": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  },
+  "license": "MIT"
+}

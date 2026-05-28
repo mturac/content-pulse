@@ -1,27 +1,19 @@
 {
   "name": "contentpulse",
-  "version": "1.0.0",
-  "description": "PayloadCMS v3 Semantic Decay & Freshness Engine Plugin",
-  "main": "src/plugins/content-pulse/index.ts",
+  "version": "0.1.0",
+  "description": "ContentPulse — Semantic Decay & Freshness Engine (monorepo)",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  },
-  "dependencies": {
-    "@payloadcms/db-sqlite": "^3.0.0",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "chrono-node": "^2.7.7",
-    "next": "^15.0.0",
-    "payload": "^3.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "test:core": "npm run test --workspace=packages/core",
+    "test:contentful": "npm run test --workspace=packages/contentful",
+    "test:payload": "npm run test --workspace=packages/payload"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
     "typescript": "^5.6.0",
     "vitest": "^2.0.0"
   }

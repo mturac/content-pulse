@@ -1,0 +1,30 @@
+{
+  "name": "@contentpulse/contentful",
+  "version": "0.1.0",
+  "description": "ContentPulse adapter for Contentful — semantic decay & freshness engine",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "contentful-app-scripts start",
+    "build": "contentful-app-scripts build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@contentful/app-sdk": "^4.24.0",
+    "@contentful/react-apps-toolkit": "^1.2.0",
+    "@contentful/rich-text-types": "^16.3.0",
+    "@contentpulse/core": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@contentful/app-scripts": "^1.8.0",
+    "@testing-library/react": "^14.1.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "jsdom": "^22.1.0",
+    "typescript": "^5.2.0",
+    "vitest": "^0.34.0"
+  },
+  "license": "MIT"
+}
