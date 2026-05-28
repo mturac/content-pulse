@@ -11,6 +11,36 @@
 
 ---
 
+## Screenshots
+
+**Strapi Content Manager** — articles monitored by the plugin:
+
+![Content Manager](docs/screenshots/02-content-manager.png)
+
+**Article with stale content** — decay signals visible in the body:
+
+![Article Detail](docs/screenshots/03-article-detail.png)
+
+**CLI — analyze any file:**
+
+```
+$ cpulse analyze getting-started-react.md
+
+Score: 15/100  [Critical]
+  ⚠  [date_decay]      Stale date: "January 2019" (7 year(s) ago)
+  ⚠  [version_decay]   Version string "v2.1.0" — verify it's still current
+  ⚠  [stale_reference] Contains placeholder: "TBD"
+  ⚠  [tech_decay]      Create React App is officially deprecated (2023)
+  ⚠  [tech_decay]      Python 2 is EOL since January 2020
+
+$ cpulse analyze typescript-5-best-practices.md
+
+Score: 100/100  [Fresh]
+  ✓  No decay detected
+```
+
+---
+
 ## Packages
 
 | Package | npm | Platform | Description |
