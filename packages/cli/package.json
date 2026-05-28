@@ -1,0 +1,27 @@
+{
+  "name": "@contentpulse/cli",
+  "version": "0.1.0",
+  "description": "ContentPulse CLI — analyze any text file for semantic decay",
+  "main": "dist/index.js",
+  "bin": {
+    "contentpulse": "dist/cli.js",
+    "cpulse": "dist/cli.js"
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["contentpulse", "cli", "content-freshness", "semantic-decay"],
+  "dependencies": {
+    "@contentpulse/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0",
+    "tsx": "^4.0.0"
+  },
+  "license": "MIT"
+}
