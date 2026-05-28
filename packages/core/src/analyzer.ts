@@ -11,7 +11,7 @@
  *   4. tech_decay       — mentions of EOL tech (CRA, Python 2, IE11…)
  */
 import * as chrono from 'chrono-node'
-import type { AnalyzerConfig, PulseWarning, Severity } from './types'
+import type { AnalyzerConfig, PulseWarning, Severity, WarningType } from './types'
 import { calcScore } from './types'
 
 // ─── ID generation ────────────────────────────────────────────────────────────
@@ -242,6 +242,38 @@ function detectTechDecay(text: string, field?: string): PulseWarning[] {
   return warnings
 }
 
+function detectCustomRules(
+  text: string,
+  rules: NonNullable<AnalyzerConfig['customRules']>,
+  field?: string
+): PulseWarning[] {
+  const warnings: PulseWarning[] = []
+  const seen = new Set<string>()
+
+  for (const rule of rules) {
+    const pattern = new RegExp(rule.pattern, 'gi')
+    let match: RegExpExecArray | null
+
+    while ((match = pattern.exec(text)) !== null) {
+      const key = `${rule.message}::${match[0].toLowerCase()}`
+      if (seen.has(key)) continue
+      seen.add(key)
+
+      warnings.push({
+        id: nextId(),
+        type: rule.type ?? ('stale_reference' satisfies WarningType),
+        severity: rule.severity ?? 'medium',
+        message: rule.message,
+        originalText: match[0],
+        suggestion: rule.suggestion,
+        field,
+      })
+    }
+  }
+
+  return warnings
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export interface AnalyzeTextInput {
@@ -270,6 +302,8 @@ export function analyzeTexts(
     maxAgeDays = 365,
     analyzers = {},
     customVersionPatterns = [],
+    customRules = [],
+    locale = 'en',
   } = config
 
   const {
@@ -281,13 +315,15 @@ export function analyzeTexts(
 
   const extraPatterns = customVersionPatterns.map((p) => new RegExp(p, 'gi'))
   const warnings: PulseWarning[] = []
+  const isEnglishLocale = locale.toLowerCase().startsWith('en')
 
   for (const { text, field } of inputs) {
     if (!text?.trim()) continue
-    if (dates) warnings.push(...detectDateDecay(text, maxAgeDays, field))
+    if (dates && isEnglishLocale) warnings.push(...detectDateDecay(text, maxAgeDays, field))
     if (versions) warnings.push(...detectVersionDecay(text, extraPatterns, field))
     if (staleReferences) warnings.push(...detectStaleReferences(text, field))
-    if (techDecay) warnings.push(...detectTechDecay(text, field))
+    if (techDecay && isEnglishLocale) warnings.push(...detectTechDecay(text, field))
+    if (customRules.length) warnings.push(...detectCustomRules(text, customRules, field))
   }
 
   return buildResult(warnings)

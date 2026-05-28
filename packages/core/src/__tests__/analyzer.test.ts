@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { analyzeText, analyzeTexts } from '../analyzer'
 import { getScoreColor, getScoreLabel, calcScore } from '../types'
+import { extractUrls } from '../link-checker'
 
 // ─── analyzeText ──────────────────────────────────────────────────────────────
 
@@ -214,4 +215,73 @@ describe('getScoreLabel', () => {
   it('Aging for 60–79', () => expect(getScoreLabel(65)).toBe('Aging'))
   it('Stale for 40–59', () => expect(getScoreLabel(45)).toBe('Stale'))
   it('Critical for < 40', () => expect(getScoreLabel(20)).toBe('Critical'))
+})
+
+describe('analyzeText — custom rules', () => {
+  it('flags a custom regex pattern', () => {
+    const r = analyzeText('Contact us at support@oldcompany.com', {
+      customRules: [{ pattern: 'oldcompany\\.com', message: 'Domain has changed', severity: 'high' }]
+    })
+    expect(r.warnings.some(w => w.message === 'Domain has changed')).toBe(true)
+  })
+
+  it('deduplicates custom rule matches', () => {
+    const r = analyzeText('oldcompany.com oldcompany.com oldcompany.com', {
+      customRules: [{ pattern: 'oldcompany\\.com', message: 'Domain has changed', severity: 'low' }]
+    })
+    expect(r.warnings.filter(w => w.message === 'Domain has changed')).toHaveLength(1)
+  })
+
+  it('uses configured severity', () => {
+    const r = analyzeText('contact oldcompany.com', {
+      customRules: [{ pattern: 'oldcompany\\.com', message: 'Domain changed', severity: 'critical' }]
+    })
+    const w = r.warnings.find(x => x.message === 'Domain changed')
+    expect(w?.severity).toBe('critical')
+  })
+})
+
+describe('analyzeText — locale-aware', () => {
+  it('skips date_decay for non-English locale', () => {
+    const r = analyzeText('Bu içerik Ocak 2019 tarihlidir.', { locale: 'tr' })
+    expect(r.warnings.filter(w => w.type === 'date_decay')).toHaveLength(0)
+  })
+
+  it('skips tech_decay for non-English locale', () => {
+    const r = analyzeText('Create React App kullanılmıştır.', { locale: 'tr' })
+    expect(r.warnings.filter(w => w.type === 'tech_decay')).toHaveLength(0)
+  })
+
+  it('still runs version_decay for non-English locale', () => {
+    const r = analyzeText('2020 edition kullanılmaktadır.', { locale: 'tr' })
+    expect(r.warnings.filter(w => w.type === 'version_decay').length).toBeGreaterThan(0)
+  })
+
+  it('runs all detectors for English locale', () => {
+    const r = analyzeText('Published January 2019. Uses Create React App.', { locale: 'en' })
+    expect(r.warnings.length).toBeGreaterThan(0)
+  })
+})
+
+describe('extractUrls', () => {
+  it('extracts http and https URLs', () => {
+    const urls = extractUrls('See https://example.com and http://old-site.org for details.')
+    expect(urls).toContain('https://example.com')
+    expect(urls).toContain('http://old-site.org')
+    expect(urls).toHaveLength(2)
+  })
+
+  it('deduplicates identical URLs', () => {
+    const urls = extractUrls('Visit https://example.com again at https://example.com')
+    expect(urls).toHaveLength(1)
+  })
+
+  it('strips trailing punctuation from URLs', () => {
+    const urls = extractUrls('See https://example.com.')
+    expect(urls[0]).toBe('https://example.com')
+  })
+
+  it('returns empty array for text with no URLs', () => {
+    expect(extractUrls('No links here, just text.')).toHaveLength(0)
+  })
 })

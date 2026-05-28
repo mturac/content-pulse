@@ -2,11 +2,16 @@
   "name": "@contentpulse/payload",
   "version": "0.1.0",
   "description": "ContentPulse adapter for Payload CMS v3 — semantic decay & freshness engine",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src"],
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
   },
+  "keywords": ["contentpulse", "contentful", "content-freshness", "semantic-decay"],
+  "repository": { "type": "git", "url": "https://github.com/mturac/content-pulse" },
   "dependencies": {
     "@contentpulse/core": "workspace:*"
   },

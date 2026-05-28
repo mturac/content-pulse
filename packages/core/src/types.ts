@@ -14,6 +14,7 @@ export type WarningType =
   | 'version_decay'
   | 'stale_reference'
   | 'tech_decay'
+  | 'url_rot'
 
 export interface PulseWarning {
   /** Unique ID for this warning (useful for React keys and deduplication) */
@@ -46,6 +47,8 @@ export interface PulseAnalysisResult {
 export interface AnalyzerConfig {
   /** Days before a date reference is considered stale (default: 365) */
   maxAgeDays?: number
+  /** BCP-47 locale tag for locale-aware analysis (default: en) */
+  locale?: string
   /** Enable/disable individual analyzers */
   analyzers?: {
     dates?: boolean
@@ -55,6 +58,14 @@ export interface AnalyzerConfig {
   }
   /** Extra version patterns as regex strings */
   customVersionPatterns?: string[]
+  /** Extra custom decay rules as regex strings */
+  customRules?: Array<{
+    pattern: string
+    type?: WarningType
+    severity?: Severity
+    message: string
+    suggestion?: string
+  }>
 }
 
 // ─── Score Helpers ────────────────────────────────────────────────────────────

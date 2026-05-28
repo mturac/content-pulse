@@ -2,13 +2,18 @@
   "name": "@contentpulse/contentful",
   "version": "0.1.0",
   "description": "ContentPulse adapter for Contentful — semantic decay & freshness engine",
-  "main": "src/index.tsx",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src"],
   "scripts": {
     "start": "contentful-app-scripts start",
     "build": "contentful-app-scripts build",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
+  "keywords": ["contentpulse", "contentful", "content-freshness", "semantic-decay"],
+  "repository": { "type": "git", "url": "https://github.com/mturac/content-pulse" },
   "dependencies": {
     "@contentful/app-sdk": "^4.24.0",
     "@contentful/react-apps-toolkit": "^1.2.0",

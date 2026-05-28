@@ -6,6 +6,8 @@
  */
 export { analyzeText, analyzeTexts } from './analyzer'
 export type { AnalyzeTextInput } from './analyzer'
+export { checkLinks, extractUrls } from './link-checker'
+export type { LinkCheckOptions, LinkCheckResult } from './link-checker'
 export {
   calcScore,
   getScoreColor,

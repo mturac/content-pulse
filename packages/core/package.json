@@ -1,19 +1,26 @@
 {
   "name": "@contentpulse/core",
   "version": "0.1.0",
-  "description": "Shared semantic decay analysis engine for ContentPulse",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "Shared semantic decay analysis engine for ContentPulse — date, version, stale-reference, tech-decay, and broken link detection",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run build && npm test"
   },
-  "dependencies": {
-    "chrono-node": "^2.7.7"
-  },
-  "devDependencies": {
-    "typescript": "^5.6.0",
-    "vitest": "^2.0.0"
-  },
-  "license": "MIT"
+  "keywords": ["contentpulse", "cms", "content-freshness", "semantic-decay", "strapi", "payload", "contentful", "broken-links"],
+  "repository": { "type": "git", "url": "https://github.com/mturac/content-pulse" },
+  "license": "MIT",
+  "dependencies": { "chrono-node": "^2.7.7" },
+  "devDependencies": { "typescript": "^5.6.0", "vitest": "^2.0.0" }
 }
