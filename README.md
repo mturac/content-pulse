@@ -21,6 +21,10 @@
 
 ![Article Detail](docs/screenshots/03-article-detail.png)
 
+**Strapi Freshness Dashboard** — real-time decay scores across all monitored collections:
+
+![Freshness Dashboard](docs/screenshots/05-dashboard.png)
+
 **CLI — analyze any file:**
 
 ```
