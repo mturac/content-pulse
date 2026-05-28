@@ -5,7 +5,7 @@
  * for consumption by @contentpulse/core analyzer.
  */
 import type { Document as RichTextDocument, Node, Text } from '@contentful/rich-text-types'
-import { BLOCKS, INLINES } from '@contentful/rich-text-types'
+import { BLOCKS } from '@contentful/rich-text-types'
 
 export function extractTextFromRichText(doc: RichTextDocument | null | undefined): string {
   if (!doc?.content) return ''

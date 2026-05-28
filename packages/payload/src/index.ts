@@ -55,7 +55,7 @@ function makeHook(cfg: ContentPulsePayloadConfig): CollectionAfterChangeHook {
   const textFields = cfg.textFields ?? DEFAULT_TEXT_FIELDS
 
   return async (args) => {
-    const { doc, req } = args
+    const { doc, req, collection } = args  // collection.slug is the authoritative source
 
     // Guard: skip recursive updates
     if (args.req.context?.skipPulseHook || doc._isAnalyzing) return doc
@@ -65,10 +65,9 @@ function makeHook(cfg: ContentPulsePayloadConfig): CollectionAfterChangeHook {
 
     try {
       const result = analyzeTexts(inputs, cfg)
-      const collectionSlug = (doc as Record<string, unknown>).collectionSlug as string ?? ''
 
       await req.payload.update({
-        collection: collectionSlug,
+        collection: collection.slug,  // fix: was reading from doc which doesn't have this field
         id: doc.id as string,
         data: {
           _pulseScore: result.score,

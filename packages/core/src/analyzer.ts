@@ -24,7 +24,8 @@ function nextId(): string {
 // ─── Version patterns ─────────────────────────────────────────────────────────
 
 const DEFAULT_VERSION_PATTERNS: RegExp[] = [
-  /\b(?:v(?:ersion)?\s*)?(\d+)\.(\d+)\.(\d+)\b/gi,
+  // Semver — negative lookbehind/ahead to exclude IP addresses (e.g. 192.168.1.1)
+  /(?<!\d\.)\b(?:v(?:ersion)?\s*)?(\d+)\.(\d+)\.(\d+)\b(?!\.\d)/gi,
   /\b(20[12]\d)\s+(?:edition|version|release|update)\b/gi,
 ]
 
@@ -192,10 +193,17 @@ function detectVersionDecay(
 
 function detectStaleReferences(text: string, field?: string): PulseWarning[] {
   const warnings: PulseWarning[] = []
+  // Deduplicate: one warning per (message category + normalised token)
+  // Prevents "deprecated" appearing 10× from blowing up the score
+  const seen = new Set<string>()
 
   for (const { pattern, severity, message } of STALE_REFERENCE_PATTERNS) {
     const matches = text.matchAll(pattern)
     for (const match of matches) {
+      const key = `${message}::${match[0].toLowerCase()}`
+      if (seen.has(key)) continue
+      seen.add(key)
+
       warnings.push({
         id: nextId(),
         type: 'stale_reference',
