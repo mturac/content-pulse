@@ -35,11 +35,18 @@ export interface PulseWarning {
 
 // ─── Analysis Result ──────────────────────────────────────────────────────────
 
+export interface PulseHistoryEntry {
+  score: number
+  analyzedAt: string  // ISO timestamp
+  warningCount: number
+}
+
 export interface PulseAnalysisResult {
   /** Freshness score: 0 (fully decayed) → 100 (perfectly fresh) */
   score: number
   warnings: PulseWarning[]
   analyzedAt: string
+  history?: PulseHistoryEntry[]
 }
 
 // ─── Config ───────────────────────────────────────────────────────────────────
@@ -94,4 +101,22 @@ export function getScoreLabel(score: number): string {
 export function calcScore(warnings: PulseWarning[]): number {
   const penalty = warnings.reduce((sum, w) => sum + SEVERITY_PENALTY[w.severity], 0)
   return Math.max(0, Math.min(100, 100 - penalty))
+}
+
+/**
+ * Append a new history entry to an existing history array.
+ * Keeps the most recent maxEntries entries (default 30).
+ */
+export function appendHistory(
+  existing: PulseHistoryEntry[] | undefined,
+  result: Pick<PulseAnalysisResult, 'score' | 'analyzedAt' | 'warnings'>,
+  maxEntries = 30,
+): PulseHistoryEntry[] {
+  const entry: PulseHistoryEntry = {
+    score: result.score,
+    analyzedAt: result.analyzedAt,
+    warningCount: result.warnings.length,
+  }
+  const prev = existing ?? []
+  return [...prev, entry].slice(-maxEntries)
 }

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Create React App",
+    "pattern": "\\bcreate[- ]react[- ]app\\b",
+    "severity": "high",
+    "message": "Create React App is officially deprecated (2023)",
+    "replacement": "Vite, Next.js, Remix, or another supported React framework",
+    "eolDate": "2023-01-01"
+  },
+  {
+    "name": "Moment.js",
+    "pattern": "\\bmoment\\.?js\\b",
+    "severity": "medium",
+    "message": "Moment.js is in maintenance mode — consider date-fns or dayjs",
+    "replacement": "date-fns, Day.js, Luxon, or Intl APIs",
+    "eolDate": "2020-09-15"
+  },
+  {
+    "name": "TSLint",
+    "pattern": "\\btslint\\b",
+    "severity": "high",
+    "message": "TSLint is deprecated — use ESLint with TypeScript support",
+    "replacement": "ESLint with TypeScript support",
+    "eolDate": "2019-02-01"
+  },
+  {
+    "name": "jQuery",
+    "pattern": "\\bjquery\\b",
+    "severity": "low",
+    "message": "jQuery usage may indicate outdated stack for modern apps",
+    "replacement": "Modern DOM APIs or framework-native patterns",
+    "eolDate": "2020-01-01"
+  },
+  {
+    "name": "AngularJS",
+    "pattern": "\\bangularjs\\b|\\bangular\\s*1\\b",
+    "severity": "critical",
+    "message": "AngularJS (v1) is EOL since December 2021",
+    "replacement": "Angular, React, Vue, or another supported frontend framework",
+    "eolDate": "2021-12-31"
+  },
+  {
+    "name": "Webpack 2/3/4",
+    "pattern": "\\bwebpack\\s*[234]\\b",
+    "severity": "medium",
+    "message": "Webpack 2/3/4 — Webpack 5 is current",
+    "replacement": "Webpack 5, Vite, or another supported bundler",
+    "eolDate": "2020-10-10"
+  },
+  {
+    "name": "Python 2",
+    "pattern": "\\bpython\\s*2(?:\\.\\d+)?\\b",
+    "severity": "critical",
+    "message": "Python 2 is EOL since January 2020",
+    "replacement": "Python 3",
+    "eolDate": "2020-01-01"
+  },
+  {
+    "name": "Node.js EOL LTS",
+    "pattern": "\\bnode(?:\\.js)?\\s*v?(?:8|10|12|14|16)\\b",
+    "severity": "high",
+    "message": "Node.js version is EOL — upgrade to current LTS",
+    "replacement": "Current Node.js LTS",
+    "eolDate": "2023-09-11"
+  },
+  {
+    "name": "Internet Explorer",
+    "pattern": "\\binternet explorer\\b|\\bIE\\s*(?:8|9|10|11)\\b",
+    "severity": "critical",
+    "message": "Internet Explorer is EOL since June 2022",
+    "replacement": "Modern evergreen browsers",
+    "eolDate": "2022-06-15"
+  },
+  {
+    "name": "Adobe Flash",
+    "pattern": "\\bflash\\b|\\badobe flash\\b",
+    "severity": "critical",
+    "message": "Adobe Flash reached EOL in December 2020",
+    "replacement": "HTML5, Web APIs, or native browser media capabilities",
+    "eolDate": "2020-12-31"
+  },
+  {
+    "name": "PHP 5/7",
+    "pattern": "\\bphp\\s*[5-7]\\.\\d",
+    "severity": "medium",
+    "message": "PHP 5.x / 7.x may be EOL — PHP 8.x is current",
+    "replacement": "PHP 8.x",
+    "eolDate": "2022-11-28"
+  },
+  {
+    "name": "Heroku Free",
+    "pattern": "\\bheroku\\s+free\\b",
+    "severity": "high",
+    "message": "Heroku discontinued free tier in 2022",
+    "replacement": "Paid Heroku dynos or another supported hosting tier",
+    "eolDate": "2022-11-28"
+  },
+  {
+    "name": "Travis CI",
+    "pattern": "\\btravis-?ci\\b",
+    "severity": "medium",
+    "message": "Travis CI free tier was removed — consider GitHub Actions",
+    "replacement": "GitHub Actions, GitLab CI, CircleCI, or another maintained CI provider",
+    "eolDate": "2021-01-01"
+  },
+  {
+    "name": "Bootstrap 2/3",
+    "pattern": "\\bbootstrap\\s*[23]\\b",
+    "severity": "medium",
+    "message": "Bootstrap 2/3 is EOL — Bootstrap 5 is current",
+    "replacement": "Bootstrap 5 or another supported UI framework",
+    "eolDate": "2021-01-01"
+  }
+]

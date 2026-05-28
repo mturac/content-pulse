@@ -21,7 +21,8 @@
  * ```
  */
 import type { CollectionAfterChangeHook, Field, Plugin } from 'payload'
-import { analyzeTexts } from '@contentpulse/core'
+import { analyzeTexts, appendHistory } from '@contentpulse/core'
+import type { PulseHistoryEntry } from '@contentpulse/core'
 import type { AnalyzerConfig } from '@contentpulse/core'
 import { extractPayloadFields } from './extractor'
 
@@ -45,6 +46,12 @@ function pulseFields(): Field[] {
     { name: '_pulseScore', type: 'number', admin: { hidden: true, readOnly: true } },
     { name: '_pulseWarnings', type: 'json', admin: { hidden: true, readOnly: true } },
     { name: '_lastAnalyzedAt', type: 'text', admin: { hidden: true, readOnly: true } },
+    {
+      name: '_pulseHistory',
+      type: 'json',
+      label: 'Pulse Score History',
+      admin: { readOnly: true, description: 'Rolling 30-entry score history' },
+    },
     { name: '_isAnalyzing', type: 'checkbox', admin: { hidden: true }, defaultValue: false },
   ]
 }
@@ -65,6 +72,10 @@ function makeHook(cfg: ContentPulsePayloadConfig): CollectionAfterChangeHook {
 
     try {
       const result = analyzeTexts(inputs, cfg)
+      const existingHistory = Array.isArray(doc._pulseHistory)
+        ? doc._pulseHistory as PulseHistoryEntry[]
+        : undefined
+      const newHistory = appendHistory(existingHistory, result)
 
       await req.payload.update({
         collection: collection.slug,  // fix: was reading from doc which doesn't have this field
@@ -73,6 +84,7 @@ function makeHook(cfg: ContentPulsePayloadConfig): CollectionAfterChangeHook {
           _pulseScore: result.score,
           _pulseWarnings: result.warnings,
           _lastAnalyzedAt: result.analyzedAt,
+          _pulseHistory: newHistory,
           _isAnalyzing: false,
         },
         context: { skipPulseHook: true },

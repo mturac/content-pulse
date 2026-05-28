@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { analyzeText, analyzeTexts } from '../analyzer'
-import { getScoreColor, getScoreLabel, calcScore } from '../types'
+import { getScoreColor, getScoreLabel, calcScore, appendHistory } from '../types'
 import { extractUrls } from '../link-checker'
+import techRadar from '../tech-radar.json'
 
 // ─── analyzeText ──────────────────────────────────────────────────────────────
 
@@ -138,6 +139,25 @@ describe('analyzeText — tech_decay (Tech Stack Radar)', () => {
   })
 })
 
+describe('tech-radar dictionary', () => {
+  it('has at least 10 entries', () => {
+    expect(techRadar.length).toBeGreaterThanOrEqual(10)
+  })
+
+  it('every entry has required fields', () => {
+    for (const entry of techRadar) {
+      expect(entry.name).toEqual(expect.any(String))
+      expect(entry.name).not.toHaveLength(0)
+      expect(entry.pattern).toEqual(expect.any(String))
+      expect(entry.pattern).not.toHaveLength(0)
+      expect(entry.severity).toEqual(expect.any(String))
+      expect(entry.severity).not.toHaveLength(0)
+      expect(entry.message).toEqual(expect.any(String))
+      expect(entry.message).not.toHaveLength(0)
+    }
+  })
+})
+
 // ─── analyzeTexts — multi-field ───────────────────────────────────────────────
 
 describe('analyzeTexts — multi-field input', () => {
@@ -200,6 +220,54 @@ describe('calcScore', () => {
       originalText: '',
     }))
     expect(calcScore(warns)).toBe(0)
+  })
+})
+
+describe('appendHistory', () => {
+  it('creates a new entry from a result', () => {
+    const result = analyzeText('Published January 2019.')
+    const h = appendHistory(undefined, result)
+    expect(h).toHaveLength(1)
+    expect(h[0].score).toBe(result.score)
+    expect(h[0].warningCount).toBe(result.warnings.length)
+    expect(h[0].analyzedAt).toBe(result.analyzedAt)
+  })
+
+  it('appends to existing history', () => {
+    const r1 = analyzeText('Published January 2019.')
+    const r2 = analyzeText('Updated March 2024.')
+    const h1 = appendHistory(undefined, r1)
+    const h2 = appendHistory(h1, r2)
+    expect(h2).toHaveLength(2)
+    expect(h2[1].score).toBe(r2.score)
+  })
+
+  it('caps at maxEntries (default 30)', () => {
+    let history: ReturnType<typeof appendHistory> | undefined
+    for (let i = 0; i < 35; i++) {
+      const r = analyzeText('hello')
+      history = appendHistory(history, r)
+    }
+    expect(history!.length).toBe(30)
+  })
+
+  it('respects custom maxEntries', () => {
+    let history: ReturnType<typeof appendHistory> | undefined
+    for (let i = 0; i < 10; i++) {
+      const r = analyzeText('hello')
+      history = appendHistory(history, r, 5)
+    }
+    expect(history!.length).toBe(5)
+  })
+
+  it('keeps most recent entries when capped', () => {
+    const entries: ReturnType<typeof appendHistory> = []
+    let history: typeof entries | undefined
+    for (let i = 0; i < 5; i++) {
+      const r = analyzeText(i < 4 ? 'Published January 2019.' : 'hello')
+      history = appendHistory(history, r, 5)
+    }
+    expect(history![4].score).toBe(100)
   })
 })
 

@@ -11,6 +11,7 @@
  *   4. tech_decay       — mentions of EOL tech (CRA, Python 2, IE11…)
  */
 import * as chrono from 'chrono-node'
+import { existsSync, readFileSync } from 'node:fs'
 import type { AnalyzerConfig, PulseWarning, Severity, WarningType } from './types'
 import { calcScore } from './types'
 
@@ -62,40 +63,60 @@ const STALE_REFERENCE_PATTERNS: Array<{
 // Technologies that are EOL, deprecated, or in maintenance mode.
 // PRs welcome to expand this dictionary.
 
-const TECH_DECAY_PATTERNS: Array<{
+type TechRadarEntry = {
+  name: string
+  pattern: string
+  severity: Severity
+  message: string
+  replacement?: string
+  eolDate?: string
+}
+
+type TechDecayPattern = {
   pattern: RegExp
   message: string
-  since: number        // year declared EOL/deprecated
   severity: Severity
-}> = [
-  // JavaScript / Frontend
-  { pattern: /\bcreate[- ]react[- ]app\b/gi, message: 'Create React App is officially deprecated (2023)', since: 2023, severity: 'high' },
-  { pattern: /\bmoment\.?js\b/gi, message: 'Moment.js is in maintenance mode — consider date-fns or dayjs', since: 2020, severity: 'medium' },
-  { pattern: /\btslint\b/gi, message: 'TSLint is deprecated — use ESLint with TypeScript support', since: 2019, severity: 'high' },
-  { pattern: /\bjquery\b/gi, message: 'jQuery usage may indicate outdated stack for modern apps', since: 2020, severity: 'low' },
-  { pattern: /\bangularjs\b|\bangular\s*1\b/gi, message: 'AngularJS (v1) is EOL since December 2021', since: 2021, severity: 'critical' },
-  { pattern: /\bwebpack\s*[234]\b/gi, message: 'Webpack 2/3/4 — Webpack 5 is current', since: 2020, severity: 'medium' },
+}
 
-  // Python
-  { pattern: /\bpython\s*2(?:\.\d+)?\b/gi, message: 'Python 2 is EOL since January 2020', since: 2020, severity: 'critical' },
+const VALID_SEVERITIES = new Set<Severity>(['low', 'medium', 'high', 'critical'])
 
-  // Node.js (LTS check by major version)
-  { pattern: /\bnode(?:\.js)?\s*v?(?:8|10|12|14|16)\b/gi, message: 'Node.js version is EOL — upgrade to current LTS', since: 2023, severity: 'high' },
+function isTechRadarEntry(value: unknown): value is TechRadarEntry {
+  if (!value || typeof value !== 'object') return false
+  const entry = value as Record<string, unknown>
 
-  // Browsers
-  { pattern: /\binternet explorer\b|\bIE\s*(?:8|9|10|11)\b/gi, message: 'Internet Explorer is EOL since June 2022', since: 2022, severity: 'critical' },
-  { pattern: /\bflash\b|\badobe flash\b/gi, message: 'Adobe Flash reached EOL in December 2020', since: 2020, severity: 'critical' },
+  return (
+    typeof entry.name === 'string' &&
+    entry.name.length > 0 &&
+    typeof entry.pattern === 'string' &&
+    entry.pattern.length > 0 &&
+    typeof entry.message === 'string' &&
+    entry.message.length > 0 &&
+    typeof entry.severity === 'string' &&
+    VALID_SEVERITIES.has(entry.severity as Severity)
+  )
+}
 
-  // PHP
-  { pattern: /\bphp\s*[5-7]\.\d/gi, message: 'PHP 5.x / 7.x may be EOL — PHP 8.x is current', since: 2022, severity: 'medium' },
+function loadTechRadar(): TechRadarEntry[] {
+  const paths = [
+    new URL('./tech-radar.json', import.meta.url),
+    new URL('../src/tech-radar.json', import.meta.url),
+  ]
+  const path = paths.find((candidate) => existsSync(candidate))
+  if (!path) throw new Error('tech-radar.json not found')
 
-  // Cloud / DevOps
-  { pattern: /\bheroku\s+free\b/gi, message: 'Heroku discontinued free tier in 2022', since: 2022, severity: 'high' },
-  { pattern: /\btravis-?ci\b/gi, message: 'Travis CI free tier was removed — consider GitHub Actions', since: 2021, severity: 'medium' },
+  const parsed: unknown = JSON.parse(readFileSync(path, 'utf8'))
+  if (!Array.isArray(parsed) || !parsed.every(isTechRadarEntry)) {
+    throw new Error('tech-radar.json contains invalid entries')
+  }
 
-  // CSS
-  { pattern: /\bbootstrap\s*[23]\b/gi, message: 'Bootstrap 2/3 is EOL — Bootstrap 5 is current', since: 2021, severity: 'medium' },
-]
+  return parsed
+}
+
+const TECH_DECAY_PATTERNS: TechDecayPattern[] = loadTechRadar().map((entry) => ({
+  pattern: new RegExp(entry.pattern, 'gi'),
+  message: entry.message,
+  severity: entry.severity,
+}))
 
 // ─── Detectors ────────────────────────────────────────────────────────────────
 

@@ -9,6 +9,7 @@ export type { AnalyzeTextInput } from './analyzer'
 export { checkLinks, extractUrls } from './link-checker'
 export type { LinkCheckOptions, LinkCheckResult } from './link-checker'
 export {
+  appendHistory,
   calcScore,
   getScoreColor,
   getScoreLabel,
@@ -17,6 +18,7 @@ export {
 export type {
   AnalyzerConfig,
   PulseAnalysisResult,
+  PulseHistoryEntry,
   PulseWarning,
   Severity,
   WarningType,
